@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PDB-REFOLD</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            margin-bottom: 20px;
+        }
+
+        input[type="submit"] {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PDB-REFOLD</h1>
+        <p>Refold PDB structures with AlphaFold</p>
+
+        <form action="/" method="post">
+            <label for="pdb_id">PDB ID (e.g.: *5xjh*):</label>
+            <input type="text" id="pdb_id" name="pdb_id" value="5xjh" required>
+            <label for="chain_id">Chain ID (e.g.: *A*):</label>
+            <input type="text" id="chain_id" name="chain_id" value="A" required>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>

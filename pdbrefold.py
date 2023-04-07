@@ -14,17 +14,12 @@ def download_file(url):
     with requests.get(url, stream=True) as r:
         with open(local_filename, 'wb') as f:
             shutil.copyfileobj(r.raw, f)
-
     return local_filename
-
 
 def fetch_pdb(uni_id):
     response = requests.get(
         f'https://alphafold.ebi.ac.uk/files/AF-{uni_id}-F1-model_v4.pdb')
     return response.content.decode('utf-8')
-
-
-
 
 def update_mapping():
     # local_csv = download_file('ftp://ftp.ebi.ac.uk/pub/databases/msd/sifts/flatfiles/csv/pdb_chain_uniprot.csv.gz')
@@ -64,7 +59,7 @@ def render_mol(pdb: str, start=0, stop=5):
     showmol(pdbview, height=500, width=600)
 
 
-def get_pdb_subdf(pdb, chain):
+def get_pdb_subdf(df, pdb, chain):
     pdb_df = df[df['PDB'] == pdb.lower()]
     odf = pdb_df[pdb_df['CHAIN'] == chain]
     return odf
@@ -106,7 +101,7 @@ if __name__ == '__main__':
     st.sidebar.write("Refold PDB structures with AlphaFold")
     x = st.sidebar.text_input("PDB ID (e.g.: *5xjh*)", value="5xjh")
     y = st.sidebar.text_input("Chain ID (e.g.: *A*)", value="A")
-    subdf = get_pdb_subdf(x, y)
+    subdf = get_pdb_subdf(df, x, y)
     # print(subdf)
     uniprot_id = subdf['SP_PRIMARY'].values[0]
     start = subdf['SP_BEG'].values[0]

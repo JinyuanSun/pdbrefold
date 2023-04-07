@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDB-REFOLD Results</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngl/2.1.0/ngl.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        #viewer {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        p {
+            text-align: center;
+        }
+
+        a {
+            color: blue;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PDB-REFOLD Results</h1>
+
+        <div id="viewer"></div>
+        <p style="font-weight: bold;">Color scheme: Crystal structure (grey), AlphaFold predicted structure (light blue)</p>
+
+        <script>
+            var viewer = new NGL.Stage("viewer");
+
+            var af_string = `{{ af_string }}`;
+            var pdb_string = `{{ pdb_string }}`;
+
+            // Load AlphaFold predicted structure
+            viewer.loadFile(new Blob([af_string], {type: 'text/plain'}), {ext: 'pdb'}).then(function (af_comp) {
+                af_comp.addRepresentation('cartoon', {color: "#d5f8fa"});
+                viewer.autoView();
+                            // Load crystal structure
+            viewer.loadFile(new Blob([pdb_string], {type: 'text/plain'}), {ext: 'pdb'}).then(function (pdb_comp) {
+                pdb_comp.addRepresentation('cartoon', {color: 'grey'});
+
+                // Align crystal structure to AlphaFold predicted structure
+                var af_structure = af_comp.structure;
+                var pdb_structure = pdb_comp.structure;
+                var superpose_matrix = pdb_structure.superpose(af_structure, true);
+                pdb_comp.setPosition(superpose_matrix);
+
+                viewer.autoView();
+            });
+        });
+    </script>
+
+    <p>TM-Score normalized by crystal structure: {{ "%.4f" | format(tm_score) }}</p>
+
+    <p><a href="{{ url_for('download_pdb', pdb_id=pdb_id, chain_id=chain_id) }}">Download PDB</a></p>
+
+    <p><a href="{{ url_for('index') }}">Back to search</a></p>
+</div>
+</body>
+</html>
+

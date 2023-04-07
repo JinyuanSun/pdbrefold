@@ -77,9 +77,13 @@
         });
     </script>
 
+    <p>Uniprot ID: {{ uniprot_id }}</p>
+
     <p>TM-Score normalized by crystal structure: {{ "%.4f" | format(tm_score) }}</p>
 
-    <p><a href="{{ url_for('download_pdb', pdb_id=pdb_id, chain_id=chain_id) }}">Download PDB</a></p>
+
+
+    <p><a href="{{ url_for('download_pdb', uniprot_id=uniprot_id) }}">Download PDB</a></p>
 
     <p><a href="{{ url_for('index') }}">Back to search</a></p>
 </div>

@@ -5,6 +5,8 @@ import shutil
 import gzip
 import numpy as np
 from flask import Flask, render_template, request
+from flask import redirect
+
 # from flask_nglview import NGLView
 from tmtools import tm_align
 
@@ -87,20 +89,25 @@ def index():
 
         updated_pdb_string = "\n".join(updated_pdb_lines)
 
-        return render_template("results.html", af_string=af_string, pdb_string=updated_pdb_string, tm_score=res.tm_norm_chain2)
+        return render_template("results.html", af_string=af_string, pdb_string=updated_pdb_string, tm_score=res.tm_norm_chain2, uniprot_id=uniprot_id)
 
     return render_template("index.html")
 
-@app.route("/download_pdb/string:pdb_id/string:chain_id")
-def download_pdb(pdb_id, chain_id):
-    pdb_string = get_pdb_chain(pdb_id, chain_id)
-    response = app.response_class(
-    response=pdb_string,
-    status=200,
-    mimetype='application/octet-stream',
-    headers={"Content-Disposition": f"attachment;filename=AF_{pdb_id}_{chain_id}.pdb"}
-    )
-    return response
+# @app.route('/download_pdb/<pdb_id>/<chain_id>')
+# def download_pdb(pdb_id, chain_id):
+#     pdb_string = get_pdb_chain(pdb_id, chain_id)
+#     response = app.response_class(
+#     response=pdb_string,
+#     status=200,
+#     mimetype='application/octet-stream',
+#     headers={"Content-Disposition": f"attachment;filename=AF_{pdb_id}_{chain_id}.pdb"}
+#     )
+#     return response
+
+@app.route('/download_pdb/<uniprot_id>')
+def download_pdb(uniprot_id):
+    alphafold_db_url = f'https://alphafold.ebi.ac.uk/files/AF-{uniprot_id}-F1-model_v4.pdb'
+    return redirect(alphafold_db_url)
 
 if __name__ == "__main__":
     app.run(debug=True)
